@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
-const API = '/api'
+const API = `${(import.meta.env.VITE_API_URL || '').replace(/\/$/, '')}/api`
 const money = value => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(Number(value) || 0)
 const percent = value => `${(Number(value || 0) * 100).toFixed(1)}%`
 

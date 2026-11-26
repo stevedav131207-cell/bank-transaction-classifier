@@ -1,0 +1,118 @@
+{
+  "accuracy": 0.9464090909090909,
+  "macro_f1": 0.9225464670453731,
+  "weighted_f1": 0.947394001549275,
+  "train_rows": 88000,
+  "test_rows": 22000,
+  "classes": [
+    "Entertainment",
+    "Fees & Charges",
+    "Food & Dining",
+    "Gifts & Transfers",
+    "Groceries",
+    "Healthcare",
+    "Income",
+    "Insurance & Investments",
+    "Rent & Housing",
+    "Shopping",
+    "Transportation",
+    "Travel",
+    "Utilities"
+  ],
+  "classification_report": {
+    "Entertainment": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1986.0
+    },
+    "Fees & Charges": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1095.0
+    },
+    "Food & Dining": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 3078.0
+    },
+    "Gifts & Transfers": {
+      "precision": 0.6406130268199234,
+      "recall": 0.5407503234152652,
+      "f1-score": 0.5864608909154683,
+      "support": 1546.0
+    },
+    "Groceries": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1583.0
+    },
+    "Healthcare": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1312.0
+    },
+    "Income": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1323.0
+    },
+    "Insurance & Investments": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1108.0
+    },
+    "Rent & Housing": {
+      "precision": 0.362657091561939,
+      "recall": 0.4627720504009164,
+      "f1-score": 0.4066431806743835,
+      "support": 873.0
+    },
+    "Shopping": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 2654.0
+    },
+    "Transportation": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 2610.0
+    },
+    "Travel": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 869.0
+    },
+    "Utilities": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1963.0
+    },
+    "accuracy": 0.9464090909090909,
+    "macro avg": {
+      "precision": 0.9233284706447586,
+      "recall": 0.9233478749089371,
+      "f1-score": 0.9225464670453731,
+      "support": 22000.0
+    },
+    "weighted avg": {
+      "precision": 0.9494539718362353,
+      "recall": 0.9464090909090909,
+      "f1-score": 0.947394001549275,
+      "support": 22000.0
+    }
+  },
+  "training_seconds": 9.23,
+  "model": "TF-IDF + Logistic Regression",
+  "random_state": 42
+}

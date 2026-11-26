@@ -174,10 +174,20 @@ function App() {
           <div className="ingestion-grid"><div className={`surface upload-surface ${dragging ? 'dragging' : ''}`} onDragOver={event => { event.preventDefault(); setDragging(true) }} onDragLeave={() => setDragging(false)} onDrop={event => { event.preventDefault(); setDragging(false); chooseFile(event.dataTransfer.files?.[0]) }}>
             <div className="surface-top"><div><span className="mini-label">DATASET</span><h3>Upload transactions</h3></div><span className="file-type">.CSV</span></div>
             <label className="dropzone"><input type="file" accept=".csv,text/csv" onChange={event => chooseFile(event.target.files?.[0] || null)} /><span className="upload-symbol">↑</span><b>{file ? file.name : 'Drop your CSV file here'}</b><small>{file ? `${(file.size / 1024 / 1024).toFixed(2)} MB · ready for validation` : 'or browse files from your device'}</small><span className="browse-link">Choose file</span></label>
-            <div className="required-field"><span className="field-check">✓</span><span><b>Required field</b><code>transaction_description</code></span><small>Other supported fields are optional.</small></div>
+            <div className="required-field">
+  <span className="field-check">✓</span>
+  <span>
+    <b>Required information</b>
+    <code>Transaction description</code>
+  </span>
+  <small>
+    Accepted headers: Description, Narration, Particulars,
+    Remarks or Transaction Description.
+  </small>
+</div>
             <button className="button button-primary full" onClick={uploadAndPredict} disabled={!file || busy}>{busy ? 'Processing dataset…' : 'Validate & categorize'}<span>→</span></button>
           </div>
-          <div className="surface validation-surface"><span className="mini-label">VALIDATION CHECKLIST</span><h3>Data quality comes first</h3><p className="surface-copy">The API checks the required description column, empty datasets, missing descriptions, duplicate rows and upload limits before prediction.</p><div className="check-row"><span>01</span><b>File format & size</b><small>CSV · up to 25 MB</small></div><div className="check-row"><span>02</span><b>Required column</b><small>transaction_description</small></div><div className="check-row"><span>03</span><b>Missing & duplicate rows</b><small>Warnings surfaced by API</small></div><div className="check-row"><span>04</span><b>Usable transaction text</b><small>Invalid rows are not inferred</small></div><div className="validation-footnote">Validation is performed by the backend; no quality result is assumed before upload.</div></div></div>
+          <div className="surface validation-surface"><span className="mini-label">VALIDATION CHECKLIST</span><h3>Data quality comes first</h3><p className="surface-copy">The API checks the required description column, empty datasets, missing descriptions, duplicate rows and upload limits before prediction.</p><div className="check-row"><span>01</span><b>File format & size</b><small>CSV · up to 25 MB</small></div><div className="check-row"><span>02</span><b>Transaction description</b><small>Flexible column names supported</small></div><div className="check-row"><span>03</span><b>Missing & duplicate rows</b><small>Warnings surfaced by API</small></div><div className="check-row"><span>04</span><b>Usable transaction text</b><small>Invalid rows are not inferred</small></div><div className="validation-footnote">Validation is performed by the backend; no quality result is assumed before upload.</div></div></div>
         </section>}
 
         {(activeView === 'overview' || activeView === 'prediction') && <section className="section-block" id="prediction"><div className="section-title"><div><span className="section-index">02</span><div><h2>Single transaction prediction</h2><p>Test one transaction description with the active baseline model.</p></div></div><span className="section-tag live-tag">LIVE INFERENCE</span></div><div className="surface prediction-surface"><form onSubmit={predictOne}><label className="mini-label" htmlFor="single-description">TRANSACTION DESCRIPTION</label><textarea id="single-description" value={singleText} onChange={event => setSingleText(event.target.value)} placeholder="e.g. UPI SWIGGY ORDER PAYMENT" required maxLength={2000}/><div className="form-footer"><small>Enter the transaction text only. Maximum 2,000 characters.</small><button className="button button-primary" disabled={busy || !singleText.trim()}>{busy ? 'Predicting…' : 'Predict category'}<span>→</span></button></div></form>

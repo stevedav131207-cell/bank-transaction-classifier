@@ -51,6 +51,82 @@ def clean_text(value):
     value = re.sub(r"[^a-z]+", " ", value)
     return re.sub(r"\s+", " ", value).strip()
 
+def normalize_column_name(column):
+    """Normalize CSV headers regardless of case, spaces or punctuation."""
+    column = str(column).strip().lower()
+    column = re.sub(r"[^a-z0-9]+", "_", column)
+    return column.strip("_")
+
+
+COLUMN_ALIASES = {
+    "transaction_description": [
+        "transaction_description",
+        "description",
+        "transaction_desc",
+        "transaction_details",
+        "details",
+        "narration",
+        "particulars",
+        "remarks",
+        "remark",
+        "transaction",
+        "description_of_transaction",
+        "transaction_narration",
+    ],
+    "amount": [
+        "amount",
+        "transaction_amount",
+        "txn_amount",
+        "debit_amount",
+        "credit_amount",
+    ],
+    "date": [
+        "date",
+        "transaction_date",
+        "txn_date",
+        "value_date",
+    ],
+    "merchant": [
+        "merchant",
+        "merchant_name",
+        "payee",
+        "recipient",
+        "vendor",
+    ],
+    "transaction_type": [
+        "transaction_type",
+        "type",
+        "txn_type",
+        "payment_type",
+    ],
+}
+
+
+def normalize_csv_columns(frame):
+    """Map common CSV header variations to standard internal column names."""
+    normalized = {}
+
+    for original_column in frame.columns:
+        normalized[original_column] = normalize_column_name(original_column)
+
+    frame = frame.rename(columns=normalized)
+
+    for canonical_name, aliases in COLUMN_ALIASES.items():
+        if canonical_name in frame.columns:
+            continue
+
+        for alias in aliases:
+            normalized_alias = normalize_column_name(alias)
+
+            if normalized_alias in frame.columns:
+                frame = frame.rename(
+                    columns={normalized_alias: canonical_name}
+                )
+                break
+
+    return frame
+
+
 def explain(description, category, limit=5):
     """Exact local linear-model feature contributions; evidence, not causation or SHAP."""
     vectorizer, classifier = model.named_steps["tfidf"], model.named_steps["clf"]
@@ -83,16 +159,27 @@ def validate_frame(frame):
             "row_count": len(frame), "columns": list(frame.columns),
             "missing_descriptions": missing, "duplicate_rows": duplicates}
 
+
 async def read_csv(file):
     if not file.filename or not file.filename.lower().endswith(".csv"):
         raise HTTPException(400, "Please upload a CSV file.")
+
     raw = await file.read()
+
     if len(raw) > 25 * 1024 * 1024:
         raise HTTPException(413, "CSV must be smaller than 25 MB.")
+
     try:
-        return pd.read_csv(io.BytesIO(raw))
+        frame = pd.read_csv(io.BytesIO(raw))
+
+        # Normalize column names before validation and prediction.
+        frame = normalize_csv_columns(frame)
+
+        return frame
+
     except Exception as exc:
         raise HTTPException(400, f"Could not read CSV: {exc}")
+
 
 class PredictRequest(BaseModel):
     transaction_description: str = Field(min_length=1, max_length=2000)
@@ -160,7 +247,7 @@ async def predict_batch(file: UploadFile = File(...)):
             result_row = {"transaction_description": description,
                           "predicted_category": category,
                           "confidence": round(confidence, 4),
-                          "explanation": explain(description, category, 3)}
+                          "explanation": []}
             # Optional source fields enable spending analytics; account identifiers are deliberately excluded.
             if "amount" in frame.columns:
                 amount = pd.to_numeric(pd.Series([frame.iloc[original_index]["amount"]]), errors="coerce").iloc[0]
